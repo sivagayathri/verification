@@ -5,7 +5,7 @@ import os from "os";
 export const STREAM = process.env.STREAM_NAME || "credential_stream";
 export const GROUP = process.env.STREAM_GROUP || "verification_group";
 const WORKER_ID = process.env.WORKER_ID || os.hostname();
-const CONSUMER_NAME = process.env.CONSUMER_NAME || WORKER_ID;
+export const CONSUMER = process.env.CONSUMER_NAME || WORKER_ID;
 
 
 export function fieldsToObject(fields: string[]): Record<string, string> {

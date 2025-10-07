@@ -1,5 +1,5 @@
 import  { redis } from "../clients/redisClient.js";
-import  { STREAM, GROUP, CONSUMER, handleStreamEntry } from "./helpers.js";
+import  { STREAM, GROUP, handleStreamEntry, CONSUMER } from "./helpers.js";
 
 
 export async function processPendingAndNew() {

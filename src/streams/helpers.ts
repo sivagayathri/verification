@@ -1,4 +1,4 @@
-import  { redis } from "../clients/redisClient.js";
+import { redis } from "../clients/redisClient.js";
 import { supabase } from "../clients/supabaseClient.js";
 import os from "os";
 
@@ -6,7 +6,6 @@ export const STREAM = process.env.STREAM_NAME || "credential_stream";
 export const GROUP = process.env.STREAM_GROUP || "verification_group";
 const WORKER_ID = process.env.WORKER_ID || os.hostname();
 export const CONSUMER = process.env.CONSUMER_NAME || WORKER_ID;
-
 
 export function fieldsToObject(fields: string[]): Record<string, string> {
   const obj: Record<string, string> = {};
@@ -45,8 +44,9 @@ export async function handleStreamEntry(id: string, fields: string[]) {
         email: obj.email ?? null,
         credentialid,
         issuedat: obj.issuedat ?? new Date().toISOString(),
-        worker: obj.worker ?? "unknown",
+        worker: obj.worker ?? CONSUMER,
       };
+
       const { error: insErr } = await supabase.from("verification").insert([payload]);
       if (insErr) {
         console.error("Supabase insert error:", insErr);
@@ -54,7 +54,7 @@ export async function handleStreamEntry(id: string, fields: string[]) {
       }
       console.log(`Inserted verification for ${credentialid}`);
     } else {
-      console.log(`Already exists in verification: ${credentialid}`);
+      console.log(`Already exists: ${credentialid}`);
     }
 
     await redis.xack(STREAM, GROUP, id);
@@ -63,7 +63,6 @@ export async function handleStreamEntry(id: string, fields: string[]) {
   }
 }
 
-// Ensure consumer group exists
 export async function ensureGroup() {
   try {
     await redis.xgroup("CREATE", STREAM, GROUP, "$", "MKSTREAM");

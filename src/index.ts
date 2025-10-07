@@ -8,7 +8,6 @@ import { router as verificationRouter } from "./routes/verification.js";
 
 dotenv.config();
 
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -26,7 +25,6 @@ const server = app.listen(PORT, () => console.log(`Verification service listenin
     process.exit(1);
   }
 })();
-
 
 process.on("SIGINT", async () => {
   console.log("Shutting down verification service...");

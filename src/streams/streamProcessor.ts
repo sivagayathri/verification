@@ -1,16 +1,12 @@
-import  { redis } from "../clients/redisClient.js";
-import  { STREAM, GROUP, handleStreamEntry, CONSUMER } from "./helpers.js";
-
+import { redis } from "../clients/redisClient.js";
+import { STREAM, GROUP, CONSUMER, handleStreamEntry } from "./helpers.js";
 
 export async function processPendingAndNew() {
   const pending = (await redis.xpending(STREAM, GROUP, "-", "+", 100)) as [string, string, number, number][];
   for (const p of pending) {
     const id = p[0];
     try {
-      const redisAny = redis as any;
-      const claimed = (await redisAny.xclaim(STREAM, GROUP, CONSUMER, 60000, id, "JUSTID", false)) as
-        | [string, string[]][]
-        | undefined;
+      const claimed = await (redis as any).xclaim(STREAM, GROUP, CONSUMER, 60000, id, "JUSTID", false) as [string, string[]][] | undefined;
       if (claimed?.length) await handleStreamEntry(claimed[0][0], claimed[0][1]);
     } catch (err) {
       console.warn("Claim error:", err);
@@ -19,8 +15,7 @@ export async function processPendingAndNew() {
 
   while (true) {
     try {
-      const redisAny = redis as any;
-      const res = await redisAny.xreadgroup(
+      const res = await (redis as any).xreadgroup(
         "GROUP",
         GROUP,
         CONSUMER,
@@ -32,6 +27,7 @@ export async function processPendingAndNew() {
         STREAM,
         ">"
       );
+
       if (!res) continue;
 
       for (const [, messages] of res) {

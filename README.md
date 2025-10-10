@@ -36,8 +36,23 @@ verification-service/
 │  ├─ streams/             # Stream helpers & processor
 │  ├─ routes/verification.ts # Verification API route
 │  └─ index.ts             # Main Express server
-│
+│  |_verification.test.ts
 ├─ Dockerfile
 ├─ package.json
 ├─ tsconfig.json
 └─ README.md
+
+
+run service
+--------------
+- npm run start    // start service
+- npm run cy:run    // run vitest test(e2e/component unit test)
+
+
+Author
+------------------------------------
+Name: Sivagayathri k
+Email: shivagayathrik2000@gmail.com
+Mobile: 8248362498
+
+

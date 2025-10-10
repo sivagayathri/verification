@@ -69,7 +69,6 @@ export async function handleStreamEntry(id: string, fields: string[]) {
 export async function ensureGroup() {
   try {
     await redis.xgroup("CREATE", STREAM, GROUP, "$", "MKSTREAM");
-    console.log("Created stream consumer group");
   } catch (err: any) {
     if (String(err).includes("BUSYGROUP") || String(err).includes("exists")) {
       console.log("Consumer group already exists");

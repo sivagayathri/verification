@@ -21,21 +21,23 @@ export async function handleStreamEntry(id: string, fields: string[]) {
   try {
     const obj = fieldsToObject(fields);
     const credentialid = obj["credentialid"];
+
     if (!credentialid) {
-      console.warn("Stream message missing credentialid:", id);
+      console.warn("Missing credentialid:", id);
       await redis.xack(STREAM, GROUP, id);
       return;
     }
+
 
     const { data: existing, error: selErr } = await supabase
       .from("verification")
       .select("credentialid")
       .eq("credentialid", credentialid)
-      .single();
+      .maybeSingle();
 
-    if (selErr && selErr.code !== "PGRST116") {
+    if (selErr) {
       console.error("Supabase select error:", selErr);
-      return;
+      return; 
     }
 
     if (!existing) {
@@ -50,7 +52,7 @@ export async function handleStreamEntry(id: string, fields: string[]) {
       const { error: insErr } = await supabase.from("verification").insert([payload]);
       if (insErr) {
         console.error("Supabase insert error:", insErr);
-        return;
+        return; 
       }
       console.log(`Inserted verification for ${credentialid}`);
     } else {
@@ -62,6 +64,7 @@ export async function handleStreamEntry(id: string, fields: string[]) {
     console.error("handleStreamEntry error:", err);
   }
 }
+
 
 export async function ensureGroup() {
   try {

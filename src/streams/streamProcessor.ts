@@ -6,8 +6,19 @@ export async function processPendingAndNew() {
   for (const p of pending) {
     const id = p[0];
     try {
-      const claimed = await (redis as any).xclaim(STREAM, GROUP, CONSUMER, 60000, id, "JUSTID", false) as [string, string[]][] | undefined;
-      if (claimed?.length) await handleStreamEntry(claimed[0][0], claimed[0][1]);
+    const claimed = await (redis as any).xclaim(
+     STREAM,
+     GROUP,
+     CONSUMER,
+      60000,
+     id
+    ) as [string, string[]][] | undefined;
+
+  if (claimed?.length) {
+  for (const [msgId, fields] of claimed) {
+    await handleStreamEntry(msgId, fields);
+  }
+  }
     } catch (err) {
       console.warn("Claim error:", err);
     }

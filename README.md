@@ -15,6 +15,7 @@ This is a Node.js (TypeScript) microservice for verifying credentials issued by 
 - Store verification results in Supabase
 - Supports multiple scalable workers
 - Logs and error handling included
+- Testing done via vitest super test 
 
 ## Tech Stack
 
@@ -36,17 +37,16 @@ verification-service/
 │  ├─ streams/             # Stream helpers & processor
 │  ├─ routes/verification.ts # Verification API route
 │  └─ index.ts             # Main Express server
-│  |_verification.test.ts
+│
 ├─ Dockerfile
 ├─ package.json
 ├─ tsconfig.json
 └─ README.md
 
-
 run service
 --------------
 - npm run start    // start service
-- npm run cy:run    // run vitest test(e2e/component unit test)
+- npx vitest run    // run vitest test
 
 
 Author
@@ -54,5 +54,3 @@ Author
 Name: Sivagayathri k
 Email: shivagayathrik2000@gmail.com
 Mobile: 8248362498
-
-

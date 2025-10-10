@@ -2,8 +2,8 @@ import { redis } from "../clients/redisClient.js";
 import { supabase } from "../clients/supabaseClient.js";
 import os from "os";
 
-export const STREAM = process.env.STREAM_NAME || "credential_stream";
-export const GROUP = process.env.STREAM_GROUP || "verification_group";
+export const STREAM = process.env.STREAM_NAME || "";
+export const GROUP = process.env.STREAM_GROUP || "";
 const WORKER_ID = process.env.WORKER_ID || os.hostname();
 export const CONSUMER = process.env.CONSUMER_NAME || WORKER_ID;
 
